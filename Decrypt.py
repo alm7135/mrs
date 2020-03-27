@@ -1,5 +1,3 @@
-# Function to encrypt the string
-# according to the morse code chart
 MORSE_CODE_DICT = {'A': '.-', 'B': '-...',
                    'C': '-.-.', 'D': '-..', 'E': '.',
                    'F': '..-.', 'G': '--.', 'H': '....',
@@ -15,6 +13,9 @@ MORSE_CODE_DICT = {'A': '.-', 'B': '-...',
                    '0': '-----', ', ': '--..--', '.': '.-.-.-',
                    '?': '..--..', '/': '-..-.', '-': '-....-',
                    '(': '-.--.', ')': '-.--.-'}
+
+# Function to encrypt the string
+# according to the morse code chart
 
 
 def encrypt(message):
@@ -75,13 +76,3 @@ def decrypt(message):
                 citext = ''
 
     return decipher
-
-
-def main():
-    message = input('enter text: ')
-    result = encrypt(message.upper())
-    print(result)
-
-
-if __name__ == "__main__":
-    main()
