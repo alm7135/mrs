@@ -7,6 +7,7 @@ def main():
     message = input('enter text: ')
     result = morse.encrypt(message.upper())
     print(result)
+    # Play sound in windows
     for charachter in result:
         if charachter == '.':
             winsound.Beep(400, 500)
@@ -18,5 +19,6 @@ def main():
             time.sleep(1)
 
 
+# Main call
 if __name__ == "__main__":
     main()
