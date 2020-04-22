@@ -17,6 +17,9 @@ def main():
         elif charachter == ' ':
             time.sleep(1)
     Sveiki cia naujas bandymas
+    dfhsdsfh
+    dfhbnsdfhb
+    sdfah
 
 if __name__ == "__main__":
     main()
