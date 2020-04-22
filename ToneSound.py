@@ -1,31 +1,38 @@
-import pygame
-import time
-from array import array
-from pygame.locals import *
+import pyaudio
+import wave
 
-pygame.mixer.pre_init(44100, -16, 1, 1024)
-pygame.init()
+CHUNK = 1024
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+RECORD_SECONDS = 5
+WAVE_OUTPUT_FILENAME = "output.wav"
 
+p = pyaudio.PyAudio()
 
-class ToneSound(pygame.mixer.Sound):
-    def __init__(self, frequency, volume):
-        self.frequency = frequency
-        pygame.mixer.Sound.__init__(self, self.build_samples())
-        self.set_volume(volume)
+stream = p.open(format=FORMAT,
+                channels=CHANNELS,
+                rate=RATE,
+                input=True,
+                frames_per_buffer=CHUNK)
 
-    def build_samples(self):
-        period = int(round(pygame.mixer.get_init()[0] / self.frequency))
-        samples = array("h", [0] * period)
-        amplitude = 2 ** (abs(pygame.mixer.get_init()[1]) - 1) - 1
-        for time in range(period):
-            if time < period / 2:
-                samples[time] = amplitude
-            else:
-                samples[time] = -amplitude
-        return samples
+print("* recording")
 
-# tone_obj = ToneSound(frequency=800, volume=.5)
+frames = []
 
-# tone_obj.play(-1)  # the -1 means to loop the sound
-# time.sleep(2)
-# tone_obj.stop()
+for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+    data = stream.read(CHUNK)
+    frames.append(data)
+
+print("* done recording")
+
+stream.stop_stream()
+stream.close()
+p.terminate()
+
+wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+wf.setnchannels(CHANNELS)
+wf.setsampwidth(p.get_sample_size(FORMAT))
+wf.setframerate(RATE)
+wf.writeframes(b''.join(frames))
+wf.close()
