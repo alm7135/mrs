@@ -1,7 +1,7 @@
 import Decrypt as morse
 import winsound
 import time
-
+import Spectrum as spec
 
 def main():
     message = input('enter text: ')
@@ -16,10 +16,8 @@ def main():
             time.sleep(0.5)
         elif charachter == ' ':
             time.sleep(1)
-    Sveiki cia naujas bandymas
-    dfhsdsfh
-    dfhbnsdfhb
-    sdfah
+    bandymas = spec.
+
 
 if __name__ == "__main__":
     main()

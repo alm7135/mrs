@@ -1,10 +1,8 @@
 import pygame
 import time
 from array import array
-from pygame.locals import *
 
 pygame.mixer.pre_init(44100, -16, 1, 1024)
-pygame.init()
 
 
 class ToneSound(pygame.mixer.Sound):
