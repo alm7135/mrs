@@ -16,7 +16,7 @@ def main():
             time.sleep(0.5)
         elif charachter == ' ':
             time.sleep(1)
-
+    Lba diena neigeairiira jega
 
 if __name__ == "__main__":
     main()
