@@ -1,7 +1,9 @@
 import winsound
 import time
 
+
 def sound(result):
+    """Function plays sound beep in windows"""
     for character in result:
         if character == '.':
             winsound.Beep(400, 500)
