@@ -14,11 +14,13 @@ MORSE_CODE_DICT = {'A': '.-', 'B': '-...',
                    '?': '..--..', '/': '-..-.', '-': '-....-',
                    '(': '-.--.', ')': '-.--.-'}
 
+
 # Function to encrypt the string
 # according to the morse code chart
 
 
 def encrypt(message):
+    """Returns text input encrypted to morse code."""
     cipher = ''
     for letter in message:
         if letter != ' ':
@@ -35,12 +37,13 @@ def encrypt(message):
 
     return cipher
 
+
 # Function to decrypt the string
 # from morse to english
 
 
 def decrypt(message):
-
+    """Returns decryption of morse code."""
     # extra space added at the end to access the
     # last morse code
     message += ' '
