@@ -1,18 +1,17 @@
-import Decrypt as morse
-import winsound
-import time
-import Spectrum as spec
-import ToneSound as ts
+import Decrypt as Code
+import ToneSound as Sound
+
 
 def main():
+    """Main Function"""
     message = input('enter text: ')
-    result = morse.encrypt(message.upper())
+    result = Code.encrypt(message.upper())
     print(result)
-    bandymas = spec.
     # Play sound in windows
-    playsound = input('do u want to play morse code as sound? (y/n)')
-    if playsound.upper() == 'Y':
-        ts.sound(result)
+    play = input('do u want to play morse code as sound? (y/n)')
+    if play.upper() == 'Y':
+        Sound.sound(result)
+
 
 # Main call
 if __name__ == "__main__":
