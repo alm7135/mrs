@@ -1,7 +1,6 @@
 import winsound
 import time
 
-
 def sound(result):
     for character in result:
         if character == '.':
