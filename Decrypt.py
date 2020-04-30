@@ -26,7 +26,7 @@ def encrypt(message):
         if letter != ' ':
 
             # Looks up the dictionary and adds the
-            # correspponding morse code
+            # corresponding morse code
             # along with a space to separate
             # morse codes for different characters
             cipher += MORSE_CODE_DICT[letter] + ' '
@@ -49,17 +49,17 @@ def decrypt(message):
     message += ' '
 
     decipher = ''
-    citext = ''
+    cite = ''
     for letter in message:
 
         # checks for space
-        if (letter != ' '):
+        if letter != ' ':
 
             # counter to keep track of space
             i = 0
 
             # storing morse code of a single character
-            citext += letter
+            cite += letter
 
         # in case of space
         else:
@@ -74,8 +74,7 @@ def decrypt(message):
             else:
 
                 # accessing the keys using their values (reverse of encryption)
-                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT
-                                                              .values()).index(citext)]
-                citext = ''
+                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(cite)]
+                cite = ''
 
     return decipher
