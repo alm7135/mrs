@@ -25,6 +25,7 @@ freqArray = []
 def analyze():
     """Analyzes audio input and writes peak frequencies into array."""
     # create a numpy array holding a single read of audio data
+    freqiuencies = []
     try:
         while True:
             data = np.fromstring(stream.read(CHUNK), dtype=np.int16)
@@ -38,7 +39,7 @@ def analyze():
             #print("peak frequency: %d Hz" % freqPeak)
             data2 = stream.read(CHUNK)
             frames.append(data2)
-            freqArray.append(int(freqPeak))
+            freqiuencies.append(int(freqPeak))
     except KeyboardInterrupt:
         # close the stream gracefully
         stream.stop_stream()
@@ -50,11 +51,16 @@ def analyze():
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
         wf.close()
-t0 = time.perf_counter()
-analyze()
-t1 = time.perf_counter()
-print(freqArray)
-elapsed = t1 - t0
-print(f'Time: {elapsed}')
-print(elapsed / len(freqArray))
+        return freqiuencies
+
+
+def analyzeAudio():
+    t0 = time.perf_counter()
+    freqArray = analyze()
+    t1 = time.perf_counter()
+    elapsed = t1 - t0
+    interval = elapsed / len(freqArray)
+    return freqArray, elapsed, interval
+
+
 # play(AudioSegment.from_wav("output.wav"))

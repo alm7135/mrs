@@ -74,7 +74,23 @@ def decrypt(message):
             else:
 
                 # accessing the keys using their values (reverse of encryption)
-                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(cite)]
+                decipher += list(MORSE_CODE_DICT.keys()
+                                 )[list(MORSE_CODE_DICT.values()).index(cite)]
                 cite = ''
 
+    return decipher
+
+
+def decryptSound(message):
+    # extra space added at the end to access the
+    # last morse code
+    decipher = ''
+    cite = ''
+    for letter in message:
+        if letter < 200:
+            decipher += ''
+        elif 800 <= letter <= 1000:
+            decipher += '.'
+        elif 1200 <= letter <= 1400:
+            decipher += '_'
     return decipher
