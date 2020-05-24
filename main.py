@@ -1,5 +1,11 @@
-import AudioAnalysis as aa
-import tkinter, mysql.connector, re, uuid, time, wave, contextlib, datetime, os
+import datetime
+import mysql.connector
+import os
+import re
+import time
+import tkinter as tk
+import uuid
+
 import simpleaudio as sa
 
 ROOT_DIR = os.path.dirname(__file__)
@@ -7,6 +13,7 @@ ROOT_DIR = os.path.dirname(__file__)
 dot = ROOT_DIR + "\\dit.wav"
 underscore = ROOT_DIR + "\\dah.wav"
 gap = ROOT_DIR + "\\gap.wav"
+tempfile = open(ROOT_DIR + "\\temp.txt", "w")
 audiolength = 0.119
 
 # Query for sending data to database
@@ -91,21 +98,48 @@ def sound(result):
             list.append(gap)
             time.sleep(.1)
 
+
+root = tk.Tk()
+canvas1 = tk.Canvas(root, width=400, height=300, relief='raised')
+canvas1.pack()
+label1 = tk.Label(root, text='Text to morse')
+label1.config(font=('helvetica', 14))
+canvas1.create_window(200, 25, window=label1)
+label2 = tk.Label(root, text='Type your text:')
+label2.config(font=('helvetica', 10))
+canvas1.create_window(200, 100, window=label2)
+entry1 = tk.Entry(root)
+canvas1.create_window(200, 140, window=entry1)
+
+
+def button():
+    message = entry1.get()
+    if message != "":
+        tenor = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        result = encrypt(message.upper())
+        messageLength = int(audiolength * len(result))
+
+        label3 = tk.Label(root, text='Encrypted text:', font=('helvetica', 10))
+        canvas1.create_window(200, 210, window=label3)
+        label4 = tk.Label(root, text=result, font=('helvetica', 10, 'bold'))
+        canvas1.create_window(200, 230, window=label4)
+
+        print("Sound duration " + messageLength.__str__() + " s")
+        sound(result)
+        val = (message, result, mac, messageLength, tenor)
+        cursor.execute(query, val)
+        db.commit()
+
+
+button1 = tk.Button(text='Enter', command=button, bg='brown', fg='white',
+                    font=('helvetica', 9, 'bold'))
+
+canvas1.create_window(200, 180, window=button1)
+
+
 def main():
     """Main Function"""
-    message = input('enter text: ')
-    timenow = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    result = encrypt(message.upper())
-    messageLength = int(audiolength * len(result))
-    val = (message, result, mac, messageLength, timenow)
-    cursor.execute(query, val)
-    db.commit()
-    print('Message was succesfully sent to the database.')
-
-    print("Sound duration " + messageLength.__str__() + " s")
-    print(result)
-    sound(result)
-
+    root.mainloop()
     # Audio analysis
     # freq, time, interval = aa.analyzeAudio()
     # print(Code.decryptSound(freq))
