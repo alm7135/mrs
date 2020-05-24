@@ -8,6 +8,8 @@
     <li>Decryption of text input ✔</li>
     <li>Decryption of morse input ✔</li>
     <li>Decryption of morse code through sound ❌</li>
+    <li>Graphical interface ✔</li>
+    <li>Ability to send messages to server ✔</li>
 </ul>
 
 <p>This project also aims to be compatible with Raspberry PI hardware.</p>
