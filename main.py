@@ -3,9 +3,9 @@ import tkinter, mysql.connector, re, uuid, time, wave, contextlib, datetime
 import simpleaudio as sa
 
 # Audio files for morse code playback.
-dot = "D:/Quick access/Documents/Uni/Semestro projektas/MorseCode/dit.wav"
-underscore = "D:/Quick access/Documents/Uni/Semestro projektas/MorseCode/dah.wav"
-gap = "D:/Quick access/Documents/Uni/Semestro projektas/MorseCode/gap.wav"
+dot = "dit.wav"
+underscore = "dah.wav"
+gap = "gap.wav"
 audiolength = 0.119
 
 # Query for sending data to database
