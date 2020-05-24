@@ -1,11 +1,12 @@
 import AudioAnalysis as aa
-import tkinter, mysql.connector, re, uuid, time, wave, contextlib, datetime
+import tkinter, mysql.connector, re, uuid, time, wave, contextlib, datetime, os
 import simpleaudio as sa
 
+ROOT_DIR = os.path.dirname(__file__)
 # Audio files for morse code playback.
-dot = "dit.wav"
-underscore = "dah.wav"
-gap = "gap.wav"
+dot = ROOT_DIR + "\\dit.wav"
+underscore = ROOT_DIR + "\\dah.wav"
+gap = ROOT_DIR + "\\gap.wav"
 audiolength = 0.119
 
 # Query for sending data to database
