@@ -8,6 +8,9 @@ import uuid
 
 import simpleaudio as sa
 
+import sounddevice as sd
+from scipy.io.wavfile import write
+
 ROOT_DIR = os.path.dirname(__file__)
 # Audio files for morse code playback.
 dot = ROOT_DIR + "\\dit.wav"
@@ -25,10 +28,10 @@ list = []
 
 # Connection to database
 db = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    passwd='',
-    database='mcdb'
+        host='localhost',
+        user='root',
+        passwd='',
+        database='mcdb'
 )
 cursor = db.cursor()
 
@@ -118,27 +121,40 @@ def button():
         tenor = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = encrypt(message.upper())
         messageLength = int(audiolength * len(result))
-
         label3 = tk.Label(root, text='Encrypted text:', font=('helvetica', 10))
         canvas1.create_window(200, 210, window=label3)
         label4 = tk.Label(root, text=result, font=('helvetica', 10, 'bold'))
         canvas1.create_window(200, 230, window=label4)
-
         print("Sound duration " + messageLength.__str__() + " s")
         sound(result)
+        write('output.wav', fs, myrec)
         val = (message, result, mac, messageLength, tenor)
         cursor.execute(query, val)
         db.commit()
 
 
+def button2():
+    cursor.execute("select message, mac, aired from messages")
+    res = cursor.fetchall()
+    for row in res:
+        tempfile.write(row[1] + " at " + row[2].strftime("%Y-%m-%d %H:%M:%S"))
+        tempfile.write("\n" + row[0] + "\n\n")
+
+
 button1 = tk.Button(text='Enter', command=button, bg='brown', fg='white',
                     font=('helvetica', 9, 'bold'))
 
+button2 = tk.Button(text='Refresh', command=button2, bg='brown', fg='white',
+                    font=('helvetica', 9, 'bold'))
+
 canvas1.create_window(200, 180, window=button1)
+canvas1.create_window(350, 25, window=button2)
 
 
 def main():
     """Main Function"""
+    # if os.path.exists("temp.txt"):
+    #     os.remove("temp.txt")
     root.mainloop()
     # Audio analysis
     # freq, time, interval = aa.analyzeAudio()
