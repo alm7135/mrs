@@ -4,13 +4,14 @@ import os
 import re
 import time
 import tkinter as tk
+from tkinter import messagebox
 import uuid
-
 import simpleaudio as sa
-
+import platform
 import sounddevice as sd
 from scipy.io.wavfile import write
 
+offline = False
 ROOT_DIR = os.path.dirname(__file__)
 # Audio files for morse code playback.
 dot = ROOT_DIR + "\\dit.wav"
@@ -27,61 +28,64 @@ mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
 list = []
 
 # Connection to database
-db = mysql.connector.connect(
+try:
+    db = mysql.connector.connect(
         host='localhost',
         user='root',
         passwd='',
         database='mcdb'
-)
-cursor = db.cursor()
+    )
+    cursor = db.cursor()
+except:
+    print("Connection error, program will continue in offline mode.")
+    offline = True
 
-# Morse dictionary
-MORSE_CODE_DICT = {'A': '.-', 'B': '-...',
-                   'C': '-.-.', 'D': '-..', 'E': '.',
-                   'F': '..-.', 'G': '--.', 'H': '....',
-                   'I': '..', 'J': '.---', 'K': '-.-',
-                   'L': '.-..', 'M': '--', 'N': '-.',
-                   'O': '---', 'P': '.--.', 'Q': '--.-',
-                   'R': '.-.', 'S': '...', 'T': '-',
-                   'U': '..-', 'V': '...-', 'W': '.--',
-                   'X': '-..-', 'Y': '-.--', 'Z': '--..',
-                   '1': '.----', '2': '..---', '3': '...--',
-                   '4': '....-', '5': '.....', '6': '-....',
-                   '7': '--...', '8': '---..', '9': '----.',
-                   '0': '-----', ', ': '--..--', '.': '.-.-.-',
-                   '?': '..--..', '/': '-..-.', '-': '-....-',
-                   '(': '-.--.', ')': '-.--.-'}
+    # Morse dictionary
+    MORSE_CODE_DICT = {'A': '.-', 'B': '-...',
+                       'C': '-.-.', 'D': '-..', 'E': '.',
+                       'F': '..-.', 'G': '--.', 'H': '....',
+                       'I': '..', 'J': '.---', 'K': '-.-',
+                       'L': '.-..', 'M': '--', 'N': '-.',
+                       'O': '---', 'P': '.--.', 'Q': '--.-',
+                       'R': '.-.', 'S': '...', 'T': '-',
+                       'U': '..-', 'V': '...-', 'W': '.--',
+                       'X': '-..-', 'Y': '-.--', 'Z': '--..',
+                       '1': '.----', '2': '..---', '3': '...--',
+                       '4': '....-', '5': '.....', '6': '-....',
+                       '7': '--...', '8': '---..', '9': '----.',
+                       '0': '-----', ', ': '--..--', '.': '.-.-.-',
+                       '?': '..--..', '/': '-..-.', '-': '-....-',
+                       '(': '-.--.', ')': '-.--.-'}
 
-
-def encrypt(message):
-    """Returns text input encrypted to morse code."""
-    cipher = ''
-    for letter in message:
-        if letter != ' ':
-            cipher += MORSE_CODE_DICT[letter] + ' '
-        else:
-            cipher += ' '
-
-    return cipher
-
-
-def decrypt(message):
-    """Returns decryption of morse code."""
-    message += ' '
-    decipher = ''
-    cite = ''
-    for letter in message:
-        if letter != ' ':
-            i = 0
-            cite += letter
-        else:
-            i += 1
-            if i == 2:
-                decipher += ' '
+    def encrypt(message):
+        """Returns text input encrypted to morse code."""
+        cipher = ''
+        for letter in message:
+            if letter != ' ':
+                cipher += MORSE_CODE_DICT[letter] + ' '
             else:
-                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(cite)]
-                cite = ''
-    return decipher
+                cipher += ' '
+
+        return cipher
+
+    def decrypt(message):
+        """Returns decryption of morse code."""
+        message += ' '
+        decipher = ''
+        cite = ''
+        for letter in message:
+            if letter != ' ':
+                i = 0
+                cite += letter
+            else:
+                i += 1
+                if i == 2:
+                    decipher += ' '
+                else:
+                    decipher += list(MORSE_CODE_DICT.keys()
+                                     )[list(MORSE_CODE_DICT.values()).index(cite)]
+                    cite = ''
+        return decipher
 
 
 def sound(result):
@@ -127,18 +131,23 @@ def button():
         canvas1.create_window(200, 230, window=label4)
         print("Sound duration " + messageLength.__str__() + " s")
         sound(result)
-        write('output.wav', fs, myrec)
-        val = (message, result, mac, messageLength, tenor)
-        cursor.execute(query, val)
-        db.commit()
+        if offline == False:
+            val = (message, result, mac, messageLength, tenor)
+            cursor.execute(query, val)
+            db.commit()
 
 
 def button2():
-    cursor.execute("select message, mac, aired from messages")
-    res = cursor.fetchall()
-    for row in res:
-        tempfile.write(row[1] + " at " + row[2].strftime("%Y-%m-%d %H:%M:%S"))
-        tempfile.write("\n" + row[0] + "\n\n")
+    if offline == False:
+        cursor.execute("select message, mac, aired from messages")
+        res = cursor.fetchall()
+        for row in res:
+            tempfile.write(row[1] + " at " +
+                           row[2].strftime("%Y-%m-%d %H:%M:%S"))
+            tempfile.write("\n" + row[0] + "\n\n")
+    else:
+        messagebox.showerror("connection error",
+                             "cant refresh while in offline mode")
 
 
 button1 = tk.Button(text='Enter', command=button, bg='brown', fg='white',
