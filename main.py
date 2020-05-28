@@ -1,4 +1,3 @@
-from main import *
 import datetime
 import os
 import re
@@ -172,29 +171,28 @@ pressed = False
 
 print("Ready")
 
-while True:
-    if keyboard.is_pressed('.'):
-        if not pressed:
-            print(f'pressed:')
-            key_down_time = time.time()
-            pressed = True
-    else:
-        if pressed == True:
-            key_up_time = time.time()
-            key_down_length = key_up_time - key_down_time
-            print(key_down_length)
-            if 1 > key_down_length > 0.15:
-                buffer2 += "-"
-            elif key_down_length >= 1:
-                buffer2 += " "
-            else:
-                buffer2 += "."
-            pressed = False
-    if keyboard.is_pressed('c'):
-        break
-
-print("morse code:\n" + buffer2)
-print(decrypt(buffer2))
+start = input()
+if start == "y":
+    while True:
+        if keyboard.is_pressed('.'):
+            if not pressed:
+                print(f'pressed:')
+                key_down_time = time.time()
+                pressed = True
+        else:
+            if pressed == True:
+                key_up_time = time.time()
+                key_down_length = key_up_time - key_down_time
+                print(key_down_length)
+                if 1 > key_down_length > 0.15:
+                    buffer2 += "-"
+                elif key_down_length >= 1:
+                    buffer2 += " "
+                else:
+                    buffer2 += "."
+                pressed = False
+        if keyboard.is_pressed('c'):
+            break
 
 
 def main():
