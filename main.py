@@ -5,6 +5,7 @@ import time
 import tkinter as tk
 import uuid
 from tkinter import messagebox
+import argparse
 
 import keyboard
 import mysql.connector
@@ -21,7 +22,7 @@ audiolength = 0.119
 lists = []
 
 # Query for sending data to database
-query = 'INSERT INTO messages (message, morse, mac, playback_time, aired) VALUES (%s, %s, %s, %s, %s)'
+query = 'INSERT INTO messages (message, morse, mac, playback_time, date_aired) VALUES (%s, %s, %s, %s, %s)'
 # MAC for identification
 mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
 # Connection to database
@@ -29,10 +30,10 @@ mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
 
 try:
     db = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        passwd='',
-        database='mcdb'
+        host='46.17.175.187',
+        user='u422925196_root',
+        passwd='rootuser',
+        database='u422925196_mcdb'
     )
     cursor = db.cursor()
 except:
@@ -74,6 +75,7 @@ def decrypt(message):
     message += ' '
     decipher = ''
     cite = ''
+    i = 0
     for letter in message:
         if letter != ' ':
             i = 0
@@ -140,7 +142,7 @@ def button():
 
 def button2():
     if not offline:
-        tempfile = open(ROOT_DIR + "\\temp.txt", "w")
+        tempfile = open(ROOT_DIR + "\\log.txt", "w")
         cursor.execute("select message, mac, aired from messages")
         res = cursor.fetchall()
         for row in res:
@@ -169,10 +171,10 @@ key_up_time = 0
 buffer2 = ""
 pressed = False
 
-print("Ready")
 
-start = input()
-if start == "y":
+def inputmorse(buffer, press):
+    pressed = press
+    buffer2 = buffer
     while True:
         if keyboard.is_pressed('.'):
             if not pressed:
@@ -193,15 +195,40 @@ if start == "y":
                 pressed = False
         if keyboard.is_pressed('c'):
             break
+    if not offline:
+        val = (decrypt(buffer2), buffer2, mac, int(
+            audiolength * len(buffer2) + 1), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        cursor.execute(query, val)
+        db.commit()
+        print("Input: " + buffer2)
+        print("Decryption: " + decrypt(buffer2))
+        print("Data sent, to database.")
 
-print(buffer2)
-print(decrypt(buffer2))
 
 def main():
     """Main Function"""
-    if os.path.exists("temp.txt"):
-        os.remove("temp.txt")
-    # root.mainloop()
+    root.mainloop()
+    while True:
+        print("Do you want to input morse code by key? (y/n) ")
+        ans = input()
+        if ans == "y":
+            try:
+                inputmorse(buffer2, pressed)
+                if not offline:
+                    tempfile = open(ROOT_DIR + "\\log.txt", "w")
+                    cursor.execute(
+                        "select message, mac, date_aired from messages")
+                    res = cursor.fetchall()
+                    for row in res:
+                        tempfile.write(row[1] + " at " +
+                                       row[2].strftime("%Y-%m-%d %H:%M:%S"))
+                        tempfile.write("\n" + row[0] + "\n\n")
+                    tempfile.close()
+            except ValueError as identifier:
+                print(identifier + "is not valid morse code")
+        else:
+            break
+            exit("Program finished")
     # Audio analysis
     # freq, time, interval = aa.analyzeAudio()
     # print(Code.decryptSound(freq))
