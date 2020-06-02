@@ -194,6 +194,8 @@ if start == "y":
         if keyboard.is_pressed('c'):
             break
 
+print(buffer2)
+print(decrypt(buffer2))
 
 def main():
     """Main Function"""
