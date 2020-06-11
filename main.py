@@ -225,10 +225,13 @@ def main():
                         tempfile.write("\n" + row[0] + "\n\n")
                     tempfile.close()
             except ValueError as identifier:
-                print(identifier + "is not valid morse code")
+                print(identifier.__str__ + "is not valid morse code")
+        elif ans == "n":
+            print("Progrma finished.")
+            exit(0)
         else:
-            break
-            exit("Program finished")
+            print("Wrong input.")
+            exit(254)
     # Audio analysis
     # freq, time, interval = aa.analyzeAudio()
     # print(Code.decryptSound(freq))
